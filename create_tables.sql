@@ -1,4 +1,4 @@
---Functions and variables 
+--Functions and variables
 ALTER DATABASE postgres SET timezone TO 'Asia/Singapore';
 CREATE TYPE ROOMSTATUS AS ENUM('Available', 'Occupied', 'Maintenance');
 CREATE TYPE BEDTYPE AS ENUM('Twin', 'King', 'Queen');
