@@ -1,0 +1,93 @@
+USE fyp;
+
+CREATE TABLE Guests (
+    guest_id INT AUTO_INCREMENT PRIMARY KEY,  -- Add guest_id
+    full_name VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    email VARCHAR(100),
+    password_hash VARCHAR(256),
+    creditcard_num CHAR(16),
+    num_guests INT DEFAULT 1,
+    date_stay DATE,
+    duration INT,
+    
+    -- Check-In and Check-Out Fields
+    checkin_status ENUM('Checked-In', 'Checked-Out', 'Reserved') DEFAULT 'Reserved',
+    check_in_date DATETIME,
+    check_out_date DATETIME,
+    
+    faceid_scan BLOB,
+    faceid_consent BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE Rooms (
+    room_id INT AUTO_INCREMENT PRIMARY KEY,
+    roomnum VARCHAR(10) NOT NULL UNIQUE,
+    roomtype ENUM('Single', 'Double', 'Suite') NOT NULL,
+    capacity INT NOT NULL,
+    Status ENUM('Available', 'Occupied', 'Maintenance') DEFAULT 'Available',
+    Price DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE RoomAccess (
+    access_id INT AUTO_INCREMENT PRIMARY KEY,
+    guest_id INT NOT NULL,
+    roomnum VARCHAR(10) NOT NULL,
+    EntryTime DATETIME NOT NULL,
+    ExitTime DATETIME,
+    FOREIGN KEY (guest_id) REFERENCES Guests(guest_id)
+);
+
+CREATE TABLE RoomPreferences (
+    preference_id INT AUTO_INCREMENT PRIMARY KEY,
+    guest_id INT NOT NULL,
+    room_id INT NOT NULL,
+    BedType ENUM('King', 'Queen', 'Twin') DEFAULT 'Queen',
+    View ENUM('Ocean', 'City','Garden') DEFAULT 'Garden',
+    SmokingPolicy ENUM('Smoking', 'Non-Smoking') DEFAULT 'Non-Smoking',  -- Add SmokingPolicy field
+    AdditionalRequests TEXT,
+    FOREIGN KEY (guest_id) REFERENCES Guests(guest_id),
+    FOREIGN KEY (room_id) REFERENCES Rooms(room_id)
+);
+
+CREATE TABLE Amenities (
+    amenity_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE GuestAmenities (
+    guest_id INT,
+    amenity_id INT,
+    PRIMARY KEY (guest_id, amenity_id),
+    FOREIGN KEY (guest_id) REFERENCES Guests(guest_id),  -- Reference to the new guest_id
+    FOREIGN KEY (amenity_id) REFERENCES Amenities(amenity_id)
+);
+
+CREATE TABLE StaffMembers (
+    staff_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    password_hash VARCHAR(255),
+    active_status BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE SystemAdmins (
+    admin_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    password_hash VARCHAR(255),
+    active_status BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE Blacklist (
+    blacklist_id INT AUTO_INCREMENT PRIMARY KEY,
+    guest_id INT,
+    reason TEXT,
+    added_by INT, -- Staff member who added the guest to the blacklist
+    date_added DATE,
+    FOREIGN KEY (guest_id) REFERENCES Guests(guest_id),
+    FOREIGN KEY (added_by) REFERENCES StaffMembers(staff_id)
+);
