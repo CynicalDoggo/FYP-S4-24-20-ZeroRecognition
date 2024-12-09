@@ -1,7 +1,6 @@
 {
   "name": "fyp-supabase-react",
   "private": true,
-  //"proxy": "http://localhost:5174",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

@@ -3,7 +3,6 @@ import { Routes, Route } from 'react-router-dom';
 import Registration from './Pages/Registration';
 import Login from './Pages/Login';
 import Homepage from './Pages/Homepage';
-import Dashboard from './Pages/Dashboard';
 import PrivacyConsent from './Pages/PrivacyConsent';
 import FacialRegistration from './Pages/FacialRegistration';
 
@@ -38,7 +37,6 @@ const App = () => {
         {token ? (
           <>
             <Route path="/Homepage" element={<Homepage token={token} />} />
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/facial-registration" element={<FacialRegistration />} />
           </>
         ) : (

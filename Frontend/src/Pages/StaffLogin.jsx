@@ -3,7 +3,7 @@ import { supabase } from '../supabaseclient';
 import { Link, useNavigate } from "react-router-dom";
 
 
-const Login = ({setToken}) => {
+const StaffLogin = ({setToken}) => {
     let navigate = useNavigate()
 
     const [formData, setFormData] =useState ({
@@ -41,11 +41,11 @@ const Login = ({setToken}) => {
       }
     }
     return (
-        <div className="flex items-center justify-center min-h-screen">
+        <div>
             <form onSubmit={handleSubmit}>
-                <h1>Login</h1>
-                <input placeholder="Email" 
-                name='email' 
+
+                <input placeholder="Username" 
+                name='username' 
                 onChange={handleChange}/>
 
                 <input placeholder="Password" 
@@ -55,8 +55,7 @@ const Login = ({setToken}) => {
 
                 <button type="submit">Submit</button>
             </form>
-            Don't have an account? <Link to='/Registration'>Register Here</Link>
         </div>
     )
 }
-export default Login;
+export default StaffLogin;
