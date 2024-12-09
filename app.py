@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 import logging
 import hashlib
 from supabase import create_client, Client
@@ -9,9 +9,12 @@ key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impi
 
 supabase: Client = create_client(url, key)
 
+app = Flask(__name__)
+
 #Functions
 
 #Registering new guest
+@app.route("/Registration", methods=['POST'])
 def register_guest(first_name, last_name, mobile, email, password, facial_data):
     #Hashes their password
     hashed_pass = hashlib.sha256(password.encode()).hexdigest()
@@ -38,5 +41,6 @@ def register_guest(first_name, last_name, mobile, email, password, facial_data):
     else:
         print("And error has occured: ", response.get('error'))
 
-
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
 
