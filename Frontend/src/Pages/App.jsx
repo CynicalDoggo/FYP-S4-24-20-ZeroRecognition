@@ -1,11 +1,12 @@
+// src/App.jsx
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Registration from './Pages/Registration';
-import Login from './Pages/Login';
-import Homepage from './Pages/Homepage';
-import Dashboard from './Pages/Dashboard';
-import PrivacyConsent from './Pages/PrivacyConsent';
-import FacialRegistration from './Pages/FacialRegistration';
+import Login from './Login';  // Ensure the path matches the file location
+import Registration from './Registration';
+import Homepage from './Homepage';
+import Dashboard from './Dashboard';
+import PrivacyConsent from './PrivacyConsent';
+import FacialRegistration from './FacialRegistration';
 
 const App = () => {
   const [token, setToken] = useState(false);
@@ -29,15 +30,14 @@ const App = () => {
     <div>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Login setToken={setToken} />} />
-        <Route path="/Registration" element={<Registration />} />
+        <Route path="/" element={<Login setToken={setToken} />} />  {/* Ensure root path points to Login */}
+        <Route path="/registration" element={<Registration />} />
         <Route path="/privacy" element={<PrivacyConsent />} />
-        <Route path="/booking" element={<div>Booking Page (Add Booking Form Here)</div>} /> {/* Placeholder */}
-
-        {/* Protected Routes - Only accessible when the user is logged in */}
+        
+        {/* Protected Routes */}
         {token ? (
           <>
-            <Route path="/Homepage" element={<Homepage token={token} />} />
+            <Route path="/homepage" element={<Homepage token={token} />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/facial-registration" element={<FacialRegistration />} />
           </>
