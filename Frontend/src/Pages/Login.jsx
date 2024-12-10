@@ -3,6 +3,7 @@ import { supabase } from '../supabaseclient';
 import { Link, useNavigate } from "react-router-dom";
 
 
+
 const Login = ({setToken}) => {
     let navigate = useNavigate()
 
@@ -43,7 +44,7 @@ const Login = ({setToken}) => {
     return (
         <div className="flex items-center justify-center min-h-screen">
             <form onSubmit={handleSubmit}>
-                <h1>Login</h1>
+                <h1 className="flex items-center justify-center min-h-screen">Login</h1>
                 <input placeholder="Email" 
                 name='email' 
                 onChange={handleChange}/>
