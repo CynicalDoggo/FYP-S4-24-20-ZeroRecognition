@@ -34,7 +34,6 @@ const Registration = ({ setToken }) => {
       alert('Please fill in all required fields');
       return;
     }
-  }
 
     // Always show privacy consent before proceeding
     setShowPrivacyConsent(true);

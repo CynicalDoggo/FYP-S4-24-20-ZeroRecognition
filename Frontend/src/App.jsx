@@ -6,7 +6,6 @@ import Homepage from './Pages/Homepage';
 import PrivacyConsent from './Pages/PrivacyConsent';
 import FacialRegistration from './Pages/FacialRegistration';
 
-
 const App = () => {
   const [token, setToken] = useState(false);
 
