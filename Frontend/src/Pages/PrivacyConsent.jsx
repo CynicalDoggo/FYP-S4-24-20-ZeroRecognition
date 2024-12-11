@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PrivacyConsent = ({ onAccept, onDeny }) => {
+const PrivacyConsent = ({ onAccept, onClose }) => {
   return (
     <div className="min-h-screen bg-gray-200 flex justify-center items-center">
       <div className="bg-white p-6 rounded shadow-md w-96">
@@ -12,15 +12,15 @@ const PrivacyConsent = ({ onAccept, onDeny }) => {
         <div className="flex justify-between">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded"
-            onClick={onAccept} // Trigger onAccept for consent
+            onClick={onAccept}
           >
             Accept
           </button>
           <button
             className="bg-gray-500 text-white px-4 py-2 rounded"
-            onClick={onDeny} // Trigger onDeny for rejecting consent
+            onClick={onClose}
           >
-            Deny
+            Skip
           </button>
         </div>
       </div>
