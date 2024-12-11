@@ -41,12 +41,14 @@ const Login = ({ setToken }) => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm mx-auto">
         <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
 
         {message && (
-          <div className={`mb-4 p-2 text-center ${message.includes('failed') ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+          <div
+            className={`mb-4 p-2 text-center ${message.includes('failed') ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}
+          >
             {message}
           </div>
         )}
