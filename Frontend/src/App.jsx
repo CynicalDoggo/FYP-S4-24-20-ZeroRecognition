@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Registration from './Pages/Registration';
-import Login from './Pages/Login';
+import Login from './Pages/Login'; // You can remove this if you no longer need it
 import Homepage from './Pages/Homepage';
 import PrivacyConsent from './Pages/PrivacyConsent';
 import FacialRegistration from './Pages/FacialRegistration';
@@ -28,7 +28,7 @@ const App = () => {
     <div>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Login setToken={setToken} />} />
+        <Route path="/" element={<Login setToken={setToken} />} /> {/* Update the route to GuestRegistrationFlow */}
         <Route path="/Registration" element={<Registration />} />
         <Route path="/privacy" element={<PrivacyConsent />} />
         <Route path="/booking" element={<div>Booking Page (Add Booking Form Here)</div>} /> {/* Placeholder */}

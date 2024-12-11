@@ -1,18 +1,31 @@
-import React from "react";
+import React from 'react';
 
-const PrivacyConsent = () => {
-    return (
-        <div className="p-6 max-w-2xl mx-auto">
-            <h1 className="text-2xl font-bold mb-4">Privacy and Consent</h1>
-            <p>Details about how we handle your data...</p>
-            <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded">
-                I Consent
-            </button>
-            <button className="mt-4 px-4 py-2 bg-gray-500 text-white rounded">
-                Opt-Out of Facial Recognition
-            </button>
+const PrivacyConsent = ({ onAccept, onClose }) => {
+  return (
+    <div className="min-h-screen bg-gray-200 flex justify-center items-center">
+      <div className="bg-white p-6 rounded shadow-md w-96">
+        <h2 className="text-xl font-semibold mb-4">Privacy Consent</h2>
+        <p className="mb-4">
+          By continuing, you agree to our privacy policy and consent to the usage of facial recognition for authentication purposes. Your data will be securely stored and used solely for authentication and related purposes.
+        </p>
+        
+        <div className="flex justify-between">
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={onAccept}
+          >
+            Accept
+          </button>
+          <button
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+            onClick={onClose}
+          >
+            Skip
+          </button>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default PrivacyConsent;
