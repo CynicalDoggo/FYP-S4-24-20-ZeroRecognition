@@ -1,123 +1,226 @@
-import React, { useState } from "react";
-import { supabase } from "../supabaseclient";
-import { Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseclient';
+import PrivacyConsent from './PrivacyConsent';
+import FacialRegistration from './FacialRegistration';
 
-
-const Registration = () => {
-  const [formData, setFormData] = useState({
-    firstName:'',lastName:'',email:'',phoneNum:'',password:'',confirmPassword:''
+const Registration = ({ setToken }) => {
+  const navigate = useNavigate();
+  const [registrationData, setRegistrationData] = useState({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    phoneNum: ''
   });
+  const [currentStep, setCurrentStep] = useState('form');
+  const [useFacialRecognition, setUseFacialRecognition] = useState(false);
+  const [showPrivacyConsent, setShowPrivacyConsent] = useState(false);
 
-  const [optInFacialRecognition, setOptInFacialRecognition] = useState(false);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setRegistrationData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
 
-  console.log(formData);
-
-  function handleChange(event) {
-    setFormData((prevFormData) => {
-      return {
-        ...prevFormData,
-        [event.target.name]: event.target.value,
-      };
-    });
-  }
-
-  function handleOptInChange(event) {
-    setOptInFacialRecognition(event.target.checked);
-  }
-
-  async function handleSubmit(e) {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            phone_num: formData.phoneNum,
-          },
-        },
-      });
-      if (error) throw error;
-      alert("Check your email for verification link");
-    } catch (error) {
-      alert(error);
+    
+    // Validate form fields
+    if (!registrationData.email || !registrationData.password || 
+        !registrationData.firstName || !registrationData.lastName) {
+      alert('Please fill in all required fields');
+      return;
     }
   }
 
+    // Always show privacy consent before proceeding
+    setShowPrivacyConsent(true);
+  };
+
+  const handlePrivacyConsentDecision = async (consentAccepted) => {
+    if (!consentAccepted) {
+      // If consent not accepted, close privacy consent modal
+      setShowPrivacyConsent(false);
+      return;
+    }
+
+    // Consent accepted
+    setShowPrivacyConsent(false);
+
+    if (useFacialRecognition) {
+      // If facial recognition is opted in, move to facial setup
+      setCurrentStep('facial-setup');
+    } else {
+      // Complete regular registration
+      await completeRegistration();
+    }
+  };
+
+  const handleFacialSetup = async (faceData) => {
+    try {
+      // Register user with auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: registrationData.email,
+        password: registrationData.password,
+        options: {
+          data: {
+            first_name: registrationData.firstName,
+            last_name: registrationData.lastName,
+            phone_num: registrationData.phoneNum,
+            has_facial_data: true
+          }
+        }
+      });
+
+      if (authError) throw authError;
+
+      // Store facial data in the database
+      const { error: facialError } = await supabase
+        .from('facial_data')
+        .insert([
+          {
+            user_id: authData.user.id,
+            face_data: faceData,
+            consent_given: true
+          }
+        ]);
+
+      if (facialError) throw facialError;
+
+      alert('Registration successful! Please check your email for verification.');
+      navigate('/'); // Redirect to login page
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('Registration failed: ' + error.message);
+    }
+  };
+
+  const completeRegistration = async () => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: registrationData.email,
+        password: registrationData.password,
+        options: {
+          data: {
+            first_name: registrationData.firstName,
+            last_name: registrationData.lastName,
+            phone_num: registrationData.phoneNum,
+            has_facial_data: false
+          }
+        }
+      });
+
+      if (error) throw error;
+      
+      alert('Registration successful! Please check your email for verification.');
+      navigate('/'); // Redirect to login page
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('Registration failed: ' + error.message);
+    }
+  };
+
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          placeholder="First Name"
-          name="firstName"
-          onChange={handleChange}
-        />
-
-        <input
-          placeholder="Last Name"
-          name="lastName"
-          onChange={handleChange}
-        />
-
-        <input placeholder="Email" name="email" onChange={handleChange} />
-
-        <input
-          placeholder="Phone Number"
-          name="phoneNum"
-          onChange={handleChange}
-        />
-
-        <input
-          placeholder="Password"
-          name="password"
-          type="password"
-          onChange={handleChange}
-        />
-
-        <input
-          placeholder="Confirm Password"
-          name="confirmPassword"
-          type="password"
-          onChange={handleChange}
-        />
-
-        {/* Opt-in Checkbox for Facial Recognition */}
-        <div className="mt-4">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={optInFacialRecognition}
-              onChange={handleOptInChange}
-              className="mr-2"
-            />
-            Opt-in for Facial Recognition
-          </label>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      {/* Registration Form */}
+      {currentStep === 'form' && (
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+          <h2 className="text-2xl mb-6 text-center">Registration</h2>
+          <form onSubmit={handleFormSubmit}>
+            <div className="mb-4">
+              <input
+                type="email"
+                name="email"
+                value={registrationData.email}
+                onChange={handleChange}
+                placeholder="Email"
+                className="w-full px-3 py-2 border rounded-md"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <input
+                type="password"
+                name="password"
+                value={registrationData.password}
+                onChange={handleChange}
+                placeholder="Password"
+                className="w-full px-3 py-2 border rounded-md"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <input
+                type="text"
+                name="firstName"
+                value={registrationData.firstName}
+                onChange={handleChange}
+                placeholder="First Name"
+                className="w-full px-3 py-2 border rounded-md"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <input
+                type="text"
+                name="lastName"
+                value={registrationData.lastName}
+                onChange={handleChange}
+                placeholder="Last Name"
+                className="w-full px-3 py-2 border rounded-md"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <input
+                type="tel"
+                name="phoneNum"
+                value={registrationData.phoneNum}
+                onChange={handleChange}
+                placeholder="Phone Number"
+                className="w-full px-3 py-2 border rounded-md"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={useFacialRecognition}
+                  onChange={() => setUseFacialRecognition(!useFacialRecognition)}
+                  className="mr-2"
+                />
+                <span>Use Facial Recognition</span>
+              </label>
+            </div>
+            <button 
+              type="submit" 
+              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+            >
+              Register
+            </button>
+          </form>
         </div>
+      )}
 
-        {/* Privacy and Consent Link */}
-        {optInFacialRecognition && (
-          <p className="mt-2 text-sm text-blue-500">
-            Please review our{" "}
-            <Link to="/privacy" className="underline hover:text-blue-700">
-              Privacy and Consent
-            </Link>
-            .
-          </p>
-        )}
+      {/* Privacy Consent */}
+      {showPrivacyConsent && (
+        <PrivacyConsent
+          onAccept={() => handlePrivacyConsentDecision(true)}
+          onCancel={() => handlePrivacyConsentDecision(false)}
+        />
+      )}
 
-        <button type="submit" className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
-          Submit
-        </button>
-      </form>
-
-      <p className="mt-4 text-sm">
-        Already have an account?{" "}
-        <Link to="/" className="text-blue-500 underline">
-          Login
-        </Link>
-      </p>
+      {/* Facial Registration */}
+      {currentStep === 'facial-setup' && (
+        <FacialRegistration
+          onComplete={handleFacialSetup}
+          onSkip={() => completeRegistration()}
+        />
+      )}
     </div>
   );
 };
