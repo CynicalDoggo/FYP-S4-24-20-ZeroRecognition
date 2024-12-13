@@ -3,6 +3,7 @@ import { supabase } from '../supabaseclient';
 import { Link, useNavigate } from "react-router-dom";
 
 
+
 const StaffLogin = ({setToken}) => {
     let navigate = useNavigate()
 
@@ -41,21 +42,37 @@ const StaffLogin = ({setToken}) => {
       }
     }
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-
-                <input placeholder="Username" 
-                name='username' 
-                onChange={handleChange}/>
-
-                <input placeholder="Password" 
-                name='password' 
-                type="password"
-                onChange={handleChange}/>
-
-                <button type="submit">Submit</button>
-            </form>
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-md shadow-md w-96"
+      >
+        <h1 className="text-2xl font-bold text-center mb-6">Staff Login</h1>
+        <div className="mb-4">
+          <input
+            placeholder="Staff ID"
+            name="staffid"
+            className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            onChange={handleChange}
+          />
         </div>
+        <div className="mb-6">
+          <input
+            placeholder="Password"
+            name="password"
+            type="password"
+            className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            onChange={handleChange}
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
+        >
+          Login
+        </button>
+      </form>
+    </div>    
     )
 }
 export default StaffLogin;

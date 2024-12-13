@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AccountOverview from "../components/GuestHomePage/AccountOverview";
 import BookingManagement from "../components/GuestHomePage/BookingManagement";
-import RoomPreferences from "../components/RoomPreferences";
-import GuestSettings from "../components/GuestSettings";
+import RoomPreferences from "../components/GuestHomePage/RoomPreferences";
+import GuestSettings from "../components/GuestHomePage/GuestSettings";
 
 const Homepage = ({ token }) => {
     let navigate = useNavigate();
@@ -12,6 +12,7 @@ const Homepage = ({ token }) => {
     function handleLogout() {
         sessionStorage.removeItem("token");
         navigate("/");
+        window.location.reload();
     }
 
     const renderContent = () => {
@@ -31,7 +32,7 @@ const Homepage = ({ token }) => {
 
     return (
         <div>
-            <h3 className="text-3xl font-bold">Welcome back, {token.user.user_metadata.first_name}</h3>
+            <h3 className="text-4xl font-bold">Welcome Back, {token.user.user_metadata.first_name}</h3>
             <button onClick={handleLogout} className="mt-4 px-4 py-2 bg-red-500 text-white rounded">
                 Logout
             </button>
